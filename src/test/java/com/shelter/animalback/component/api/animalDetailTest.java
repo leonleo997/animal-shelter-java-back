@@ -1,5 +1,6 @@
 package com.shelter.animalback.component.api;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.shelter.animalback.controller.dto.AnimalDto;
 import com.shelter.animalback.domain.Animal;
 import io.restassured.RestAssured;
@@ -9,10 +10,17 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.web.servlet.MockMvc;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -22,31 +30,27 @@ public class animalDetailTest {
     @LocalServerPort
     private int port;
 
+    @Autowired
+    private MockMvc mockMvc;
+
     private AnimalDto cat;
 
     @BeforeEach
-    public void setUp() {
+    public void setUp() throws Exception {
         RestAssured.port = port;
-
         cat = new AnimalDto("Thor", "Birmano", "Male", false, new String[]{"Leucemia Felina"});
-        RestAssured
-                .given()
-                .contentType(ContentType.JSON)
-                .body(cat)
-                .when()
-                .post("/animals");
+        var carString = new ObjectMapper().writeValueAsString(cat);
+        mockMvc.perform(post("/animals")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(carString));
     }
 
     @Test
-    public void animaDetailWithSuccessStatusCodeAndContentType() {
-        RestAssured
-                .when()
-                .get("/animals/Thor")
-                .then()
-                .assertThat()
-                .statusCode(200)
-                .and()
-                .contentType(ContentType.JSON);
+    public void animaDetailWithSuccessStatusCodeAndContentType() throws Exception {
+        var response = mockMvc.perform(get("/animals/Thor")).andReturn().getResponse();
+
+        MatcherAssert.assertThat(response.getStatus(), Matchers.equalTo(HttpStatus.OK.value()));
+        MatcherAssert.assertThat(response.getContentType(),Matchers.equalTo(MediaType.APPLICATION_JSON.toString()));
     }
 
     @Test
