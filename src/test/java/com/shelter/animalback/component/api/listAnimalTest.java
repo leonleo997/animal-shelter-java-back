@@ -2,6 +2,8 @@ package com.shelter.animalback.component.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.shelter.animalback.controller.dto.AnimalDto;
+import com.shelter.animalback.model.AnimalDao;
+import com.shelter.animalback.repository.AnimalRepository;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.module.jsv.JsonSchemaValidator;
@@ -37,16 +39,16 @@ public class listAnimalTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @BeforeEach
-    @SneakyThrows
-    public void setUp() {
-        AnimalDto  cat = new AnimalDto("Thor", "Birmano", "Male", false, new String[]{"Leucemia Felina"});
-        var carString = new ObjectMapper().writeValueAsString(cat);
-        mockMvc.perform(post("/animals")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(carString));
-    }
+    @Autowired
+    private AnimalRepository animalRepository;
 
+    @BeforeEach
+    public void setUp() {
+        var  cat = new AnimalDao("Thor", "Birmano", "Male", false);
+
+        animalRepository.save(cat);
+    }
+    
     @Test
     @SneakyThrows
     public void listAnimalsSuccessfully() {
