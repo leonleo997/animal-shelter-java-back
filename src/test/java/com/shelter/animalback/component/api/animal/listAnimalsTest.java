@@ -1,12 +1,7 @@
-package com.shelter.animalback.component.api;
+package com.shelter.animalback.component.api.animal;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.shelter.animalback.controller.dto.AnimalDto;
 import com.shelter.animalback.model.AnimalDao;
 import com.shelter.animalback.repository.AnimalRepository;
-import io.restassured.RestAssured;
-import io.restassured.http.ContentType;
-import io.restassured.module.jsv.JsonSchemaValidator;
 import lombok.SneakyThrows;
 import org.everit.json.schema.loader.SchemaLoader;
 import org.json.JSONArray;
@@ -18,7 +13,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
@@ -34,7 +28,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @AutoConfigureMockMvc
-public class listAnimalTest {
+public class listAnimalsTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -48,7 +42,7 @@ public class listAnimalTest {
 
         animalRepository.save(cat);
     }
-    
+
     @Test
     @SneakyThrows
     public void listAnimalsSuccessfully() {
@@ -65,7 +59,7 @@ public class listAnimalTest {
 
         var response = mockMvc.perform(get("/animals")).andReturn().getResponse();
 
-        var jsonSchema = new JSONObject(new JSONTokener(listAnimalTest.class.getResourceAsStream("/animals.json")));
+        var jsonSchema = new JSONObject(new JSONTokener(listAnimalsTest.class.getResourceAsStream("/animals.json")));
         var jsonArray = new JSONArray(response.getContentAsString());
 
         var schema = SchemaLoader.load(jsonSchema);
