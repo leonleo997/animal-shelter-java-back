@@ -8,6 +8,7 @@
   "interactions": [
     {
       "description": "a request to list all animals",
+      "providerState": "has animals",
       "request": {
         "method": "GET",
         "path": "/animals"
