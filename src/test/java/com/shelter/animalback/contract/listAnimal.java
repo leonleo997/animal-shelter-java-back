@@ -1,6 +1,7 @@
 package com.shelter.animalback.contract;
 
 
+import au.com.dius.pact.provider.junit5.HttpTestTarget;
 import au.com.dius.pact.provider.junit5.PactVerificationContext;
 import au.com.dius.pact.provider.junit5.PactVerificationInvocationContextProvider;
 import au.com.dius.pact.provider.junitsupport.Provider;
@@ -15,16 +16,18 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.ArrayList;
 
 @ExtendWith(SpringExtension.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Provider("AnimalShelterBack")
-@PactBroker(host = "animal-shelter-ui.pactflow.io", scheme = "https"
-        , authentication = @PactBrokerAuth(token = "MGI11RSqGXd8Cxhd7eRo3Q"))
+@PactBroker(url = "https://animal-shelter-ui.pactflow.io", authentication = @PactBrokerAuth(token = "MGI11RSqGXd8Cxhd7eRo3Q"))
 public class listAnimal {
+    @LocalServerPort
+    private int port;
 
     @MockBean
     private AnimalService animalService;
@@ -36,9 +39,17 @@ public class listAnimal {
     }
 
     @BeforeEach
-    void setupCreateAnimal() {
-        //createAnimal(); // SI ESTÁ AQUÍ FUNCIONA
+    void setupPact(PactVerificationContext context) {
+        context.setTarget(new HttpTestTarget("localhost", port));
     }
+
+    /*
+    @BeforeEach
+    void setupCreateAnimal() {
+        createAnimal(); // SI ESTÁ AQUÍ FUNCIONA
+    }
+    */
+
 
     private void createAnimal() {
         Animal animal = new Animal();
@@ -55,6 +66,7 @@ public class listAnimal {
 
     @State("there are animals")
     public void getAnimals() {
-        createAnimal(); //SI ESTÁ AQUÍ NO
+        var a = 1 + 1;
+        // createAnimal(); //SI ESTÁ AQUÍ NO
     }
 }
