@@ -1,21 +1,24 @@
 package com.shelter.animalback.contract;
 
 
-import au.com.dius.pact.provider.junit5.HttpTestTarget;
 import au.com.dius.pact.provider.junit5.PactVerificationContext;
 import au.com.dius.pact.provider.junit5.PactVerificationInvocationContextProvider;
 import au.com.dius.pact.provider.junitsupport.Provider;
 import au.com.dius.pact.provider.junitsupport.State;
-import au.com.dius.pact.provider.junitsupport.loader.PactBroker;
-import au.com.dius.pact.provider.junitsupport.loader.PactBrokerAuth;
+import au.com.dius.pact.provider.junitsupport.loader.PactFolder;
+import au.com.dius.pact.provider.spring.junit5.MockMvcTestTarget;
+import com.shelter.animalback.controller.AnimalController;
 import com.shelter.animalback.domain.Animal;
 import com.shelter.animalback.service.interfaces.AnimalService;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.TestTemplate;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -24,13 +27,17 @@ import java.util.ArrayList;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Provider("AnimalShelterBack")
-@PactBroker(url = "https://animal-shelter-ui.pactflow.io", authentication = @PactBrokerAuth(token = "MGI11RSqGXd8Cxhd7eRo3Q"))
+@PactFolder("pacts")
+@Slf4j
 public class listAnimal {
     @LocalServerPort
     private int port;
 
-    @MockBean
+    @Mock
     private AnimalService animalService;
+
+    @InjectMocks
+    private AnimalController animalController;
 
     @TestTemplate
     @ExtendWith(PactVerificationInvocationContextProvider.class)
@@ -39,18 +46,14 @@ public class listAnimal {
     }
 
     @BeforeEach
-    void setupPact(PactVerificationContext context) {
-        context.setTarget(new HttpTestTarget("localhost", port));
+    void before(PactVerificationContext context) {
+        MockitoAnnotations.initMocks(this);
+        MockMvcTestTarget target = new MockMvcTestTarget();
+        target.setControllers(animalController);
+        context.setTarget(target);
     }
 
-    /*
-    @BeforeEach
-    void setupCreateAnimal() {
-        createAnimal(); // SI ESTÁ AQUÍ FUNCIONA
-    }
-    */
-
-
+//    @BeforeEach// UNCOMMENT THE ANNOTATION TO MAKE IT WORKS
     private void createAnimal() {
         Animal animal = new Animal();
         animal.setName("Yesid");
@@ -66,7 +69,6 @@ public class listAnimal {
 
     @State("there are animals")
     public void getAnimals() {
-        var a = 1 + 1;
-        // createAnimal(); //SI ESTÁ AQUÍ NO
+        createAnimal(); //IT SHOULD WORK HERE BUT IT DOES NOT WORK
     }
 }
