@@ -22,10 +22,7 @@
             "name": "manchas",
             "breed": "Bengali",
             "gender": "Female",
-            "vaccinated": true,
-            "vaccines": [
-              "Rabia"
-            ]
+            "vaccinated": true
           }
         ],
         "matchingRules": {
@@ -46,17 +43,24 @@
           },
           "$.body[*].vaccinated": {
             "match": "type"
-          },
-          "$.body[*].vaccines": {
-            "min": 1
-          },
-          "$.body[*].vaccines[*].*": {
-            "match": "type"
-          },
-          "$.body[*].vaccines[*]": {
-            "match": "type"
           }
         }
+      }
+    },
+    {
+      "description": "a request to list empty animals",
+      "providerState": "there are no animals",
+      "request": {
+        "method": "GET",
+        "path": "/animals"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+        },
+        "body": [
+
+        ]
       }
     }
   ],
