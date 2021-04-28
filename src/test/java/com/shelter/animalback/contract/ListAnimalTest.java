@@ -18,7 +18,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.ArrayList;
 
@@ -48,19 +47,7 @@ public class ListAnimalTest {
     }
 
     @State("has animals")
-    public void thereIsOneAnimal() {
-        ArrayList animals = singleAnimalList();
-        Mockito.when(animalService.getAll()).thenReturn(animals);
-    }
-
-    @State("there are no animals")
     public void noAnimals() {
-        ArrayList animals = new ArrayList();
-        Mockito.when(animalService.getAll()).thenReturn(animals);
-
-    }
-
-    private ArrayList singleAnimalList() {
         Animal animal = new Animal();
         animal.setName("Yesid");
         animal.setGender("Male");
@@ -69,6 +56,12 @@ public class ListAnimalTest {
 
         ArrayList animals = new ArrayList();
         animals.add(animal);
-        return animals;
+        Mockito.when(animalService.getAll()).thenReturn(animals);
+    }
+
+    @BeforeEach
+    public void publishResults() {
+//        System.setProperty("pact.verifier.publishResults", "true");
+//        System.setProperty("pact.provider.version", "1.0.0");
     }
 }
