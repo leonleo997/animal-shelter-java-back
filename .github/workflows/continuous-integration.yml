@@ -27,8 +27,6 @@ jobs:
           PACT_BROKER_BASE_URL: ${{ secrets.PACT_BROKER_BASE_URL }}
           PACT_BROKER_TOKEN: ${{ secrets.PACT_BROKER_TOKEN }}
           PACT_BROKER_SCHEMA: ${{ secrets.PACT_BROKER_SCHEMA }}
-          PACT_VERIFIER_PUBLISH_RESULTS: true
-          PACT_PROVIDER_VERSION: "1.0.0"
         run: ./gradlew test --tests "com.shelter.animalback.contract.*"
       - name: Run component tests
         run: ./gradlew test --tests "com.shelter.animalback.component.api.*"

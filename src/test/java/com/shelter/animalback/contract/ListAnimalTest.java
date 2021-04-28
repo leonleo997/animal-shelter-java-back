@@ -41,6 +41,9 @@ public class ListAnimalTest {
 
     @BeforeEach
     void before(PactVerificationContext context) {
+        System.setProperty("pact.verifier.publishResults", "true");
+        System.setProperty("pact.provider.version", "1.0");
+
         MockMvcTestTarget testTarget = new MockMvcTestTarget();
         testTarget.setControllers(animalController);
         context.setTarget(testTarget);
@@ -57,11 +60,5 @@ public class ListAnimalTest {
         ArrayList animals = new ArrayList();
         animals.add(animal);
         Mockito.when(animalService.getAll()).thenReturn(animals);
-    }
-
-    @BeforeEach
-    public void publishResults() {
-//        System.setProperty("pact.verifier.publishResults", "true");
-//        System.setProperty("pact.provider.version", "1.0.0");
     }
 }
