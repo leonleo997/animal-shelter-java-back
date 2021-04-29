@@ -21,8 +21,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.ArrayList;
 
 
-@PactBroker(host = "animal-shelter-ui.pactflow.io", scheme = "https",
-        authentication = @PactBrokerAuth(token = "MGI11RSqGXd8Cxhd7eRo3Q"))
+@PactBroker(host = "${PACT_BROKER_BASE_URL}", scheme = "${PACT_BROKER_SCHEMA}",
+        authentication = @PactBrokerAuth(token = "${PACT_BROKER_TOKEN}"))
 @Provider("AnimalShelterBack")
 @ExtendWith(MockitoExtension.class)
 public class ListAnimalTest {
